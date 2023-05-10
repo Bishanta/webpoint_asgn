@@ -1,4 +1,6 @@
-export default function NewsCard({ news }) {
+import { NewsDataType } from "../types"
+
+export default function NewsCard({ news }: {news: NewsDataType}) {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 mt-10">
             <div className="flex justify-between items-center mb-4">
