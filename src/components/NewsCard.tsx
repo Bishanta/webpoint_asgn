@@ -10,7 +10,7 @@ export default function NewsCard({ news }: {news: NewsDataType}) {
     return (
         <div className="bg-white rounded-lg shadow-md p-6 mt-10">
             <div className="flex flex-col md:flex-row justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 md:mb-0">Title: {news.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 md:mb-0">{news.title}</h2>
                 <div className="flex items-center space-x-2">
                     <span className="text-gray-500"> <FontAwesomeIcon icon={faThumbsUp} /> {news.points}</span>
                     <span className="text-gray-500">•</span>
@@ -21,7 +21,7 @@ export default function NewsCard({ news }: {news: NewsDataType}) {
                     <span className="text-gray-500"> <FontAwesomeIcon icon={faComments} /> {news.num_comments ? news.num_comments : 0}</span>
                 </div>
             </div>
-            {news.url && <><FontAwesomeIcon icon={faLink} /> {news.url}</>}
+            {news.url && <a className="text-blue-600" href={news.url} target="_blank"><FontAwesomeIcon icon={faLink} /> {news.url}</a>}
         </div>
     )
 }

@@ -1,8 +1,17 @@
-import { useMemo } from "react";
+import { useMemo, Dispatch, SetStateAction } from "react";
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export default function Pagination({ setParams, params, total }) {
+interface PaginationProps {
+    setParams: Dispatch<SetStateAction<any>>;
+    params: {
+      page: number;
+      hitsPerPage: number;
+    };
+    total: number;
+  }
+
+export default function Pagination({ setParams, params, total }: PaginationProps) {
     const totalPages = Math.ceil(total / params.hitsPerPage)
 
     const paginationRange = usePagination({ currentPage: params.page, totalCount: total, siblingCount: 3, pageSize: params.hitsPerPage })
@@ -28,18 +37,18 @@ export default function Pagination({ setParams, params, total }) {
             return (
                 <button
                     key={index}
-                    className={`w-8 h-8 flex items-center justify-center ${pageNumber - 1 === params.page ? 'cursor-default font-bold' : 'cursor-pointer'
+                    className={`w-8 h-8 flex items-center justify-center ${Number(pageNumber) - 1 === params.page ? 'cursor-default font-bold' : 'cursor-pointer'
                         }`}
-                    onClick={() => setParams({ ...params, page: pageNumber - 1 })}
+                    onClick={() => setParams({ ...params, page: Number(pageNumber) - 1 })}
                 >
                     {pageNumber}
                 </button>
             );
         })}
         <button
-            className={`w-8 h-8 flex items-center text-white justify-center ${params.page + 1 === totalPages ? 'bg-gray-300 cursor-default' : 'bg-green-500 hover:bg-green-600 cursor-pointer'
+            className={`w-8 h-8 flex items-center text-white justify-center ${params.page + 1 === totalPages || params.page + 1 === 100 ? 'bg-gray-300 cursor-default' : 'bg-green-500 hover:bg-green-600 cursor-pointer'
                 }`}
-            disabled={params.page + 1 === totalPages}
+            disabled={params.page + 1 === totalPages || params.page + 1 === 100}
             onClick={() => {
                 if (params.page + 1 < totalPages) setParams({ ...params, page: params.page + 1 });
             }}
@@ -52,7 +61,7 @@ export default function Pagination({ setParams, params, total }) {
 
 export const DOTS = '...';
 
-const range = (start, end) => {
+const range = (start: number, end: number) => {
     let length = end - start + 1;
     return Array.from({ length }, (_, idx) => idx + start);
 };
@@ -62,9 +71,14 @@ const usePagination = ({
     pageSize,
     siblingCount = 1,
     currentPage
+}: {
+    totalCount: number,
+    pageSize: number,
+    siblingCount?: number,
+    currentPage: number
 }) => {
     const paginationRange = useMemo(() => {
-        const totalPageCount = Math.ceil(totalCount / pageSize);
+        const totalPageCount = Math.ceil(totalCount / pageSize) < 100 ? Math.ceil(totalCount / pageSize) : 100;
 
         // Pages count is determined as siblingCount + firstPage + lastPage + currentPage + 2*DOTS
         const totalPageNumbers = siblingCount + 5;

@@ -1,5 +1,5 @@
 import PageLayout from "../../layouts/PageLayout"
-import { useGetAllQuery } from "../../services/news";
+import { useGetPopularQuery, useGetLatestQuery } from "../../services/news";
 import { NewsParamType, NewsDataType } from "../../types";
 import Pagination from "../../components/Pagination";
 import SearchImage from '../../assets/Curious-rafiki.png'
@@ -22,15 +22,24 @@ export default function News() {
 
     const debouncedParams = useDebounce(params, 300);
 
-    const { data: newsData, isLoading, isFetching, error } = useGetAllQuery(debouncedParams)
+    const { data: newsData, isLoading, isFetching, error } = params.tags === "front_page" ? useGetPopularQuery(debouncedParams) : useGetLatestQuery(debouncedParams)
     return <PageLayout>
 
         <div className="relative flex items-center">
-            {/*
-             <div className="flex-1 ml-4">
-                Menu will go here...
+            <div className="flex-1 space-x-4">
+                <button
+                    className={`text-lg font-semibold ${params.tags === "front_page" ? "text-green-500" : "text-gray-600"}`}
+                    onClick={() => setParams({ ...params, page: 0, tags: "front_page" })}
+                >
+                    Popular
+                </button>
+                <button
+                    className={`text-lg font-semibold ${params.tags === "story" ? "text-green-500" : "text-gray-600"}`}
+                    onClick={() => setParams({ ...params, page: 0, tags: "story" })}
+                >
+                    Latest
+                </button>
             </div>
-             */}
 
             <label className="relative flex-1">
                 <span className="sr-only">Search</span>
@@ -58,13 +67,14 @@ export default function News() {
                     <img src={LoadingGif} alt="loading spinner" className="w-20 h-auto" />
                 </div>
             ) :
-                newsData ? (
+                newsData.hits.length ? (
                     <>
                         {newsData.hits.map((news: NewsDataType) => <NewsCard news={news} key={news.objectID} />)}
                         <Pagination params={params} setParams={setParams} total={newsData.nbHits} />
                     </>) : (
                     <div className="flex flex-col justify-center items-center h-[80vh]">
                         <img src={SearchImage} alt="No data" className="max-w-full w-80 h-auto mt-8" />
+                        <h5 className="text-lg font-bold">No Data Found</h5>
                     </div>
                 )}
 

@@ -2,13 +2,13 @@ import { baseAPI } from "../index.js";
 
 const newsApi = baseAPI.injectEndpoints({
     endpoints: (build) => ({
-        getAll: build.query({
+        getPopular: build.query({
             query: (params = {}) => ({
                 url: `search`,
                 params
             }),
         }),
-        getAllByDate: build.query({
+        getLatest: build.query({
             query: (params = {}) => ({
                 url: `search_by_date`,
                 params
@@ -17,4 +17,4 @@ const newsApi = baseAPI.injectEndpoints({
     })
 })
 
-export const { useGetAllQuery, useGetAllByDateQuery } = newsApi
+export const { useGetPopularQuery, useGetLatestQuery } = newsApi
